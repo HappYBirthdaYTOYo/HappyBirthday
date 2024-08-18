@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Shaped Balloons with Box</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #ffffff; /* Soft background color */
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+    }
+    
+    .container {
+        text-align: center;
+        position: relative; /* Ensure the container is positioned relative to its parent */
+        z-index: 2; /* Ensure the box is above the balloons */
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+    
+    .balloon-container {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden; /* Hide balloons that overflow the container */
+    }
+    
+    .balloon {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background-image: url('https://img.freepik.com/premium-vector/heart-shaped-red-balloon-white-background_554353-44.jpg'); /* Heart-shaped balloon image */
+        background-size: cover;
+        animation: float linear infinite;
+        z-index: 1; /* Ensure balloons are behind the box */
+    }
+    
+    @keyframes float {
+        0% {
+            bottom: -50px; /* Start just below the visible area */
+            transform: translateX(0);
+        }
+        100% {
+            bottom: 100%; /* End just above the visible area */
+            transform: translateX(30px); /* Optional horizontal movement */
+        }
+    }
+    
+    .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 320px;
+        padding: 20px;
+        background: #ffffff; /* White background for the box */
+        border: 1px solid #dbe1e8; /* Light gray border */
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: relative;
+        cursor: pointer; /* Pointer cursor to indicate it's clickable */
+        transition: all 0.3s ease; /* Smooth transition for all properties */
+        outline: none; /* Remove default focus outline */
+        overflow: hidden; /* Ensure content doesn't overflow */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+        z-index: 2; /* Ensure the box is above the balloons */
+    }
+    
+    .box::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        width: 140%;
+        height: 140%;
+        background: linear-gradient(135deg, #f8cdd4, #f7a8a9); /* Soft pink gradient effect */
+        opacity: 0.2;
+        z-index: 1;
+        border-radius: 50%;
+        transform: rotate(-15deg);
+    }
+    
+    .box::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        right: -20px;
+        width: 140%;
+        height: 140%;
+        background: linear-gradient(135deg, #b4dfed, #a2c2e8); /* Soft blue gradient effect */
+        opacity: 0.2;
+        z-index: 1;
+        border-radius: 50%;
+        transform: rotate(15deg);
+    }
+    
+    .box h2 {
+        margin: 0 0 10px;
+        font-size: 2rem;
+        color: #333;
+        z-index: 2;
+        position: relative;
+    }
+    
+    .box p {
+        margin: 0 0 20px;
+        font-size: 1.1rem;
+        color: #666;
+        z-index: 2;
+        position: relative;
+    }
+    
+    
+    .box:hover {
+        background: #f0f4f8; /* Slightly darker background on hover */
+        border-color: #b0bec5; /* Darker border color on hover */
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        animation: colorChange 1.5s linear infinite, pulse 1.5s linear infinite; /* Combined animation */
+    }
+    
+    .button {
+        display: inline-block;
+        background-color: #ff6f61; /* Button background color */
+        color: #fff; /* Button text color */
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        z-index: 2;
+        position: relative;
+        text-decoration: none; /* Remove underline from the link */
+        text-align: center; /* Center the text within the button */
+    }
+    
+    .button:hover {
+        background-color: #e55e5a; /* Darker shade for hover */
+        transform: scale(1.05); /* Slightly enlarge on hover */
+    }
+    
+    @keyframes colorChange {
+        0% {
+            background: #ffffff; /* Original background */
+        }
+        100% {
+            background: #f9f9f9; /* Slightly different background on hover */
+        }
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 50px;
+    }
+    
+</style>
+<body>
+    <div class="container">
+        <div class="box">
+            <h2>No Idea About The Planet but My Whole World Was Born Today!</h2>
+            <p> My Short Angel 😘</p>
+            <a href="2.html" class="button">Click</a>
+        </div>
+    </div>
+    <div class="balloon-container">
+        <!-- Balloons will be dynamically added here -->
+    </div>
+    <script>
+        const balloonContainer = document.querySelector('.balloon-container');
+
+function createBalloon() {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    
+    // Randomize horizontal position
+    const left = Math.random() * window.innerWidth;
+    balloon.style.left = `${left}px`;
+    
+    // Randomize animation duration
+    const duration = Math.random() * 10 + 10; // Between 10 and 20 seconds
+    balloon.style.animationDuration = `${duration}s`;
+    
+    balloonContainer.appendChild(balloon);
+    
+    // Remove balloon after animation ends
+    balloon.addEventListener('animationend', () => {
+        balloon.remove();
+    });
+}
+
+// Create balloons at regular intervals
+setInterval(createBalloon, 500);
+
+    </script>
+</body>
+</html>
