@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firework Animation with Fancy Box</title>
+    <style>
+        body {
+            margin: 0;
+            background: linear-gradient(120deg, #141E30, #243B55);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: 'Bree Serif', serif;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #happy-birthday {
+            font-size: 5rem;
+            opacity: 0;
+            position: relative;
+            animation: fadeIn 1s forwards, moveToTop 5s forwards;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 00px;
+        }
+
+        .letter {
+            display: inline-block;
+            transform: translateY(-200px) scale(0.5);
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes letterAnimation {
+            0% { opacity: 0; transform: translateY(-200px) scale(0.5) rotate(360deg); }
+            50% { opacity: 1; transform: translateY(0) scale(1.2) rotate(-10deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+        }
+
+        @keyframes moveToTop {
+            0% { top: 50%; transform: translateY(-50%); }
+            100% { top: -10%; transform: translateY(-50%); }
+        }
+
+        #small-text {
+    font-size: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    position: relative;
+    margin-top: 5px; /* Adjusted to bring the text higher */
+    animation: fadeInText 1s forwards 6s;
+    z-index: 10;
+}
+
+
+        @keyframes fadeInText {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #firework-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .fancy-box {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            color: #333;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+            margin-top: 100px;
+            z-index: 1;
+            border: 2px solid #e4b4b4;
+        }
+
+        .fancy-box h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .fancy-box p {
+            font-size: 1.2rem;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .fancy-box .button {
+            background: linear-gradient(45deg, #ff4081, #ff80ab);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .fancy-box .button::before {
+            content: '❤️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 0.5;
+            color: white;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .fancy-box .button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .fancy-box .button:hover {
+            background: linear-gradient(45deg, #ff80ab, #ff4081);
+            transform: scale(1.05);
+        }
+
+        .fancy-box .button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+<div id="happy-birthday">
+    <span class="letter">H</span>
+    <span class="letter">A</span>
+    <span class="letter">P</span>
+    <span class="letter">P</span>
+    <span class="letter">Y</span>
+    &nbsp;
+    <span class="letter">B</span>
+    <span class="letter">I</span>
+    <span class="letter">R</span>
+    <span class="letter">T</span>
+    <span class="letter">H</span>
+    <span class="letter">D</span>
+    <span class="letter">A</span>
+    <span class="letter">Y</span>
+</div>
+
+<div id="small-text"><p>To The One Who Deserves All The Smiles In The Whole World !! <br> Always Keep Smiling Cause Mana Degghara Samudhralaki kodhava leedhu AMMA!</p></div>
+
+<canvas id="firework-canvas"></canvas>
+
+<div class="fancy-box">
+    <h2>Smile A Little More!!</h2>
+    <p>Keep a smile on your face and click below.</p>
+    <button class="button" id="tap-button"><span><b> TAP </b></span></button>
+</div>
+
+<script>
+    const letters = document.querySelectorAll('.letter');
+    const images = document.querySelectorAll('#camera-roll .film-strip img');
+
+    // Animate letters
+    letters.forEach((letter, index) => {
+        setTimeout(() => {
+            letter.style.opacity = '1';
+            letter.style.transform = 'translateY(0) scale(1) rotate(0)';
+            letter.style.animation = `letterAnimation 1.5s ease-out forwards`;
+        }, index * 200);
+    });
+
+    // Fireworks animation
+    const canvas = document.getElementById('firework-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    class Firework {
+        constructor(x, y, targetX, targetY, color) {
+            this.x = x;
+            this.y = y;
+            this.targetX = targetX;
+            this.targetY = targetY;
+            this.color = color;
+            this.particles = [];
+            this.speed = 3;
+            this.angle = Math.atan2(targetY - y, targetX - x);
+            this.exploded = false;
+        }
+
+        update() {
+            if (!this.exploded) {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                if (Math.hypot(this.targetX - this.x, this.targetY - this.y) < this.speed) {
+                    this.exploded = true;
+                    this.explode();
+                }
+            }
+
+            for (const particle of this.particles) {
+                particle.update();
+            }
+
+            this.particles = this.particles.filter(particle => particle.opacity > 0);
+        }
+
+        draw() {
+            if (!this.exploded) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            for (const particle of this.particles) {
+                particle.draw();
+            }
+        }
+
+        explode() {
+            for (let i = 0; i < 50; i++) {
+                this.particles.push(new Particle(this.targetX, this.targetY, this.color));
+            }
+        }
+    }
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.size = random(2, 4);
+            this.speed = random(1, 5);
+            this.angle = random(0, Math.PI * 2);
+            this.opacity = 1;
+            this.fade = 0.02;
+        }
+
+        update() {
+            this.x += Math.cos(this.angle) * this.speed;
+            this.y += Math.sin(this.angle) * this.speed;
+            this.opacity -= this.fade;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    function createFireworks() {
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const x = Math.random() * canvas.width;
+                const y = canvas.height;
+                const targetX = Math.random() * canvas.width;
+                const targetY = Math.random() * (canvas.height / 2);
+                const color = `255, ${Math.random() * 255}, ${Math.random() * 255}`;
+                const firework = new Firework(x, y, targetX, targetY, color);
+                fireworks.push(firework);
+            }, i * 1000);
+        }
+    }
+
+    const fireworks = [];
+    createFireworks();
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        fireworks.forEach(firework => {
+            firework.update();
+            firework.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    document.getElementById('tap-button').addEventListener('click', () => {
+        window.location.href = '3.html'; // Replace with your target URL
+    });
+    
+</script>
+
+</body>
+</html>
